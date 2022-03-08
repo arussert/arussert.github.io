@@ -87,7 +87,7 @@
                         <td>' + (feature.properties['Periods'] !== null ? autolinker.link(feature.properties['Periods'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
-                        <th scope="row">Mantojuma</th>\
+                        <th scope="row">Mantojumā saraksta</th>\
                         <td>' + (feature.properties['Mantojuma'] !== null ? autolinker.link(feature.properties['Mantojuma'].toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
@@ -97,10 +97,6 @@
                     <tr>\
                         <th scope="row">Komentāri</th>\
                         <td>' + (feature.properties['Komentāri'] !== null ? autolinker.link(feature.properties['Komentāri'].toLocaleString()) : '') + '</td>\
-                    </tr>\
-                    <tr>\
-                        <th scope="row">Literatūr</th>\
-                        <td>' + (feature.properties['Literatūr'] !== null ? autolinker.link(feature.properties['Literatūr'].toLocaleString()) : '') + '</td>\
                     </tr>\
                 </table>';
             layer.bindPopup(popupContent, {maxHeight: 400});
