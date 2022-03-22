@@ -1,0 +1,444 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="initial-scale=1,user-scalable=no,maximum-scale=1,width=device-width">
+        <meta name="mobile-web-app-capable" content="yes">
+        <meta name="apple-mobile-web-app-capable" content="yes">
+        <link rel="stylesheet" href="css/leaflet.css">
+        <link rel="stylesheet" href="css/qgis2web.css"><link rel="stylesheet" href="css/fontawesome-all.min.css">
+        <link rel="stylesheet" href="css/leaflet-search.css">
+        <style>
+        #map {
+            width: 1620px;
+            height: 852px;
+        }
+        </style>
+        <title></title>
+    </head>
+    <body>
+        <div id="map">
+        </div>
+        <script src="js/qgis2web_expressions.js"></script>
+        <script src="js/leaflet.js"></script>
+        <script src="js/leaflet-svg-shape-markers.min.js"></script>
+        <script src="js/leaflet.rotatedMarker.js"></script>
+        <script src="js/leaflet.pattern.js"></script>
+        <script src="js/leaflet-hash.js"></script>
+        <script src="js/Autolinker.min.js"></script>
+        <script src="js/rbush.min.js"></script>
+        <script src="js/labelgun.min.js"></script>
+        <script src="js/labels.js"></script>
+        <script src="js/leaflet-search.js"></script>
+        <script src="data/ArchaeologicalPoints_1.js"></script>
+        <script>
+        var highlightLayer;
+        function highlightFeature(e) {
+            highlightLayer = e.target;
+
+            if (e.target.feature.geometry.type === 'LineString') {
+              highlightLayer.setStyle({
+                color: '#ffff00',
+              });
+            } else {
+              highlightLayer.setStyle({
+                fillColor: '#ffff00',
+                fillOpacity: 1
+              });
+            }
+            highlightLayer.openPopup();
+        }
+        var map = L.map('map', {
+            zoomControl:true, maxZoom:28, minZoom:1
+        }).fitBounds([[56.50931646311007,24.1050816619283],[56.99954550042271,25.807257661928286]]);
+        var hash = new L.Hash(map);
+        map.attributionControl.setPrefix('<a href="https://github.com/tomchadwin/qgis2web" target="_blank">qgis2web</a> &middot; <a href="https://leafletjs.com" title="A JS library for interactive maps">Leaflet</a> &middot; <a href="https://qgis.org">QGIS</a>');
+        var autolinker = new Autolinker({truncate: {length: 30, location: 'smart'}});
+        var bounds_group = new L.featureGroup([]);
+        function setBounds() {
+        }
+        map.createPane('pane_GoogleRoad_0');
+        map.getPane('pane_GoogleRoad_0').style.zIndex = 400;
+        var layer_GoogleRoad_0 = L.tileLayer('https://mt1.google.com/vt/lyrs=m&x={x}&y={y}&z={z}', {
+            pane: 'pane_GoogleRoad_0',
+            opacity: 1.0,
+            attribution: '<a href="https://www.google.at/permissions/geoguidelines/attr-guide.html">Map data ©2015 Google</a>',
+            minZoom: 1,
+            maxZoom: 28,
+            minNativeZoom: 0,
+            maxNativeZoom: 20
+        });
+        layer_GoogleRoad_0;
+        map.addLayer(layer_GoogleRoad_0);
+        function pop_ArchaeologicalPoints_1(feature, layer) {
+            layer.on({
+                mouseout: function(e) {
+                    for (i in e.target._eventParents) {
+                        e.target._eventParents[i].resetStyle(e.target);
+                    }
+                    if (typeof layer.closePopup == 'function') {
+                        layer.closePopup();
+                    } else {
+                        layer.eachLayer(function(feature){
+                            feature.closePopup()
+                        });
+                    }
+                },
+                mouseover: highlightFeature,
+            });
+            var popupContent = '<table>\
+                    <tr>\
+                        <th scope="row">Nosaukums</th>\
+                        <td>' + (feature.properties['Nosaukums'] !== null ? autolinker.link(feature.properties['Nosaukums'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Kategorija</th>\
+                        <td>' + (feature.properties['Kategorija'] !== null ? autolinker.link(feature.properties['Kategorija'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Periods</th>\
+                        <td>' + (feature.properties['Periods'] !== null ? autolinker.link(feature.properties['Periods'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Mantojuma </th>\
+                        <td>' + (feature.properties['Mantojuma '] !== null ? autolinker.link(feature.properties['Mantojuma '].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Petits?</th>\
+                        <td>' + (feature.properties['Petits?'] !== null ? autolinker.link(feature.properties['Petits?'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Komentari</th>\
+                        <td>' + (feature.properties['Komentari'] !== null ? autolinker.link(feature.properties['Komentari'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                </table>';
+            layer.bindPopup(popupContent, {maxHeight: 400});
+        }
+
+        function style_ArchaeologicalPoints_1_0(feature) {
+            switch(String(feature.properties['q2wHide_Symbol'])) {
+                case 'Apb/unk':
+                    return {
+                pane: 'pane_ArchaeologicalPoints_1',
+                shape: 'triangle',
+                radius: 5.6,
+                opacity: 1,
+                color: 'rgba(255,255,255,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 2.0,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(134,134,134,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'Apb/D':
+                    return {
+                pane: 'pane_ArchaeologicalPoints_1',
+                shape: 'triangle',
+                radius: 5.6,
+                opacity: 1,
+                color: 'rgba(255,255,255,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 2.0,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(64,35,228,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'Apb/V':
+                    return {
+                pane: 'pane_ArchaeologicalPoints_1',
+                shape: 'triangle',
+                radius: 5.6,
+                opacity: 1,
+                color: 'rgba(255,255,255,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 2.0,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(57,161,25,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'Apb/J':
+                    return {
+                pane: 'pane_ArchaeologicalPoints_1',
+                shape: 'triangle',
+                radius: 5.6,
+                opacity: 1,
+                color: 'rgba(255,255,255,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 2.0,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(214,168,16,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'Apm/B':
+                    return {
+                pane: 'pane_ArchaeologicalPoints_1',
+                shape: 'square',
+                radius: 5.6,
+                opacity: 1,
+                color: 'rgba(255,255,255,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 2.0,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(154,13,176,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'Apm/D':
+                    return {
+                pane: 'pane_ArchaeologicalPoints_1',
+                shape: 'square',
+                radius: 5.6,
+                opacity: 1,
+                color: 'rgba(255,255,255,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 2.0,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(64,35,228,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'DPZ/D':
+                    return {
+                pane: 'pane_ArchaeologicalPoints_1',
+                radius: 4.8,
+                opacity: 1,
+                color: 'rgba(0,0,0,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(64,35,228,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'DPZ/J':
+                    return {
+                pane: 'pane_ArchaeologicalPoints_1',
+                radius: 4.8,
+                opacity: 1,
+                color: 'rgba(0,0,0,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(214,168,16,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'M/D':
+                    return {
+                pane: 'pane_ArchaeologicalPoints_1',
+                shape: 'diamond',
+                radius: 6.0,
+                opacity: 1,
+                color: 'rgba(255,255,255,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 2.0,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(64,35,228,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'Obj/V':
+                    return {
+                pane: 'pane_ArchaeologicalPoints_1',
+                shape: 'triangle',
+                radius: 4.0,
+                opacity: 1,
+                color: 'rgba(255,255,255,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 2.0,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(86,200,11,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'P/unk':
+                    return {
+                pane: 'pane_ArchaeologicalPoints_1',
+                shape: 'diamond',
+                radius: 8.8,
+                opacity: 1,
+                color: 'rgba(255,255,255,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 2.0,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(134,134,134,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'P/D':
+                    return {
+                pane: 'pane_ArchaeologicalPoints_1',
+                shape: 'diamond',
+                radius: 8.8,
+                opacity: 1,
+                color: 'rgba(255,255,255,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 2.0,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(64,35,228,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'RM/D':
+                    return {
+                pane: 'pane_ArchaeologicalPoints_1',
+                radius: 6.0,
+                opacity: 1,
+                color: 'rgba(255,255,255,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(64,35,228,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'SV/D':
+                    return {
+                pane: 'pane_ArchaeologicalPoints_1',
+                shape: 'triangle',
+                radius: 4.0,
+                opacity: 1,
+                color: 'rgba(255,255,255,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 2.0,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(64,35,228,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'K/J':
+                    return {
+                pane: 'pane_ArchaeologicalPoints_1',
+                radius: 4.0,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(182,127,7,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'Obj/J':
+                    return {
+                pane: 'pane_ArchaeologicalPoints_1',
+                shape: 'triangle',
+                radius: 5.6,
+                opacity: 1,
+                color: 'rgba(255,255,255,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 2.0,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(182,127,7,1.0)',
+                interactive: true,
+            }
+                    break;
+            }
+        }
+        map.createPane('pane_ArchaeologicalPoints_1');
+        map.getPane('pane_ArchaeologicalPoints_1').style.zIndex = 401;
+        map.getPane('pane_ArchaeologicalPoints_1').style['mix-blend-mode'] = 'normal';
+        var layer_ArchaeologicalPoints_1 = new L.geoJson(json_ArchaeologicalPoints_1, {
+            attribution: '',
+            interactive: true,
+            dataVar: 'json_ArchaeologicalPoints_1',
+            layerName: 'layer_ArchaeologicalPoints_1',
+            pane: 'pane_ArchaeologicalPoints_1',
+            onEachFeature: pop_ArchaeologicalPoints_1,
+            pointToLayer: function (feature, latlng) {
+                var context = {
+                    feature: feature,
+                    variables: {}
+                };
+                return L.shapeMarker(latlng, style_ArchaeologicalPoints_1_0(feature));
+            },
+        });
+        bounds_group.addLayer(layer_ArchaeologicalPoints_1);
+        map.addLayer(layer_ArchaeologicalPoints_1);
+            var abstract = new L.Control({'position':'topleft'});
+            abstract.onAdd = function (map) {
+                this._div = L.DomUtil.create('div',
+                'leaflet-control abstract');
+                this._div.id = 'abstract'
+                    this._div.setAttribute("onmouseenter", "abstract.show()");
+                    this._div.setAttribute("onmouseleave", "abstract.hide()");
+                    this.hide();
+                    return this._div;
+                };
+                abstract.hide = function () {
+                    this._div.classList.remove("abstractUncollapsed");
+                    this._div.classList.add("abstract");
+                    this._div.innerHTML = 'i'
+                }
+                abstract.show = function () {
+                    this._div.classList.remove("abstract");
+                    this._div.classList.add("abstractUncollapsed");
+                    this._div.innerHTML = '<br />B - Bronzas laikmets<br />1800.g.p.m.ē. - 500.g.p.m.ē.<br />D1 - Senākais dzelzs laikmets<br />500.g.p.m.ē. - 1.g.m.ē.<br />D2 - Agrais dzelzs laikmets<br />1 - 400<br />D3 - Vidējais dzelzs laikmets<br />400 - 800<br />D4 - Vēlais dzelzs laikmets<br />800-1200<br />V - Viduslaiku arheoloģija<br />1200 - 1500<br />J - Jauno laiku arheoloģija<br />1500 - 1918<br /><br /><br />Apb. - Apbedījumi / burials [I - uzkalniņu kapi; II - līdzenie kapi]<br /><br />Apm. - Apmetne / Settlement<br /><br />DPZ - Depozīts / deposit<br /><br />Izn. - Iznīcināts / destroyed<br /><br />K - Kulta vieta / Sacred site<br /><br />RM - Romiešu monētu depozīts<br /><br />Obj. - Objekts / Misc site<br /><br />P - Pilskalns / Hillfort<br /><br />SV - Savrupatradums / Solitary find<br /><br /><br /><br />Objekta krāsa apzīmē senāko laika periodu.<br /><br />Depozītu un savrupatradumu atrašanās vieta kartē var neatbilst patiesībai. ';
+            };
+            abstract.addTo(map);
+        var baseMaps = {};
+        L.control.layers(baseMaps,{'Archaeological Points<br /><table><tr><td style="text-align: center;"><img src="legend/ArchaeologicalPoints_1_Apbunk0.png" /></td><td>Apb/unk</td></tr><tr><td style="text-align: center;"><img src="legend/ArchaeologicalPoints_1_ApbD1.png" /></td><td>Apb/D</td></tr><tr><td style="text-align: center;"><img src="legend/ArchaeologicalPoints_1_ApbV2.png" /></td><td>Apb/V</td></tr><tr><td style="text-align: center;"><img src="legend/ArchaeologicalPoints_1_ApbJ3.png" /></td><td>Apb/J</td></tr><tr><td style="text-align: center;"><img src="legend/ArchaeologicalPoints_1_ApmB4.png" /></td><td>Apm/B</td></tr><tr><td style="text-align: center;"><img src="legend/ArchaeologicalPoints_1_ApmD5.png" /></td><td>Apm/D</td></tr><tr><td style="text-align: center;"><img src="legend/ArchaeologicalPoints_1_DPZD6.png" /></td><td>DPZ/D</td></tr><tr><td style="text-align: center;"><img src="legend/ArchaeologicalPoints_1_DPZJ7.png" /></td><td>DPZ/J</td></tr><tr><td style="text-align: center;"><img src="legend/ArchaeologicalPoints_1_MD8.png" /></td><td>M/D</td></tr><tr><td style="text-align: center;"><img src="legend/ArchaeologicalPoints_1_ObjV9.png" /></td><td>Obj/V</td></tr><tr><td style="text-align: center;"><img src="legend/ArchaeologicalPoints_1_Punk10.png" /></td><td>P/unk</td></tr><tr><td style="text-align: center;"><img src="legend/ArchaeologicalPoints_1_PD11.png" /></td><td>P/D</td></tr><tr><td style="text-align: center;"><img src="legend/ArchaeologicalPoints_1_RMD12.png" /></td><td>RM/D</td></tr><tr><td style="text-align: center;"><img src="legend/ArchaeologicalPoints_1_SVD13.png" /></td><td>SV/D</td></tr><tr><td style="text-align: center;"><img src="legend/ArchaeologicalPoints_1_KJ14.png" /></td><td>K/J</td></tr><tr><td style="text-align: center;"><img src="legend/ArchaeologicalPoints_1_ObjJ15.png" /></td><td>Obj/J</td></tr></table>': layer_ArchaeologicalPoints_1,"Google Road": layer_GoogleRoad_0,}).addTo(map);
+        setBounds();
+        map.addControl(new L.Control.Search({
+            layer: layer_ArchaeologicalPoints_1,
+            initial: false,
+            hideMarkerOnCollapse: true,
+            propertyName: 'Nosaukums'}));
+        document.getElementsByClassName('search-button')[0].className +=
+         ' fa fa-binoculars';
+        </script>
+    </body>
+</html>
