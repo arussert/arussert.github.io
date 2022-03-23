@@ -1,0 +1,1093 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="initial-scale=1,user-scalable=no,maximum-scale=1,width=device-width">
+        <meta name="mobile-web-app-capable" content="yes">
+        <meta name="apple-mobile-web-app-capable" content="yes">
+        <link rel="stylesheet" href="css/leaflet.css">
+        <link rel="stylesheet" href="css/qgis2web.css"><link rel="stylesheet" href="css/fontawesome-all.min.css">
+        <style>
+        #map {
+            width: 1620px;
+            height: 852px;
+        }
+        </style>
+        <title></title>
+    </head>
+    <body>
+        <div id="map">
+        </div>
+        <script src="js/qgis2web_expressions.js"></script>
+        <script src="js/leaflet.js"></script>
+        <script src="js/leaflet-svg-shape-markers.min.js"></script>
+        <script src="js/leaflet.rotatedMarker.js"></script>
+        <script src="js/leaflet.pattern.js"></script>
+        <script src="js/leaflet-hash.js"></script>
+        <script src="js/Autolinker.min.js"></script>
+        <script src="js/rbush.min.js"></script>
+        <script src="js/labelgun.min.js"></script>
+        <script src="js/labels.js"></script>
+        <script src="data/NA_1.js"></script>
+        <script src="data/Jaunolaikuarheoloija_2.js"></script>
+        <script src="data/Viduslaikuarheoloija_3.js"></script>
+        <script src="data/Vlaisdzelzslaikmets_4.js"></script>
+        <script src="data/Vidjaisdzelzslaikmets_5.js"></script>
+        <script src="data/Agraisdzelzslaikmets_6.js"></script>
+        <script src="data/Senkaisdzelzslaikmets_7.js"></script>
+        <script src="data/Bronzaslaikmets_8.js"></script>
+        <script>
+        var highlightLayer;
+        function highlightFeature(e) {
+            highlightLayer = e.target;
+
+            if (e.target.feature.geometry.type === 'LineString') {
+              highlightLayer.setStyle({
+                color: '#ffff00',
+              });
+            } else {
+              highlightLayer.setStyle({
+                fillColor: '#ffff00',
+                fillOpacity: 1
+              });
+            }
+            highlightLayer.openPopup();
+        }
+        var map = L.map('map', {
+            zoomControl:true, maxZoom:28, minZoom:1
+        }).fitBounds([[56.50534793422147,24.135705444066755],[56.99562843381463,25.837881444066745]]);
+        var hash = new L.Hash(map);
+        map.attributionControl.setPrefix('<a href="https://github.com/tomchadwin/qgis2web" target="_blank">qgis2web</a> &middot; <a href="https://leafletjs.com" title="A JS library for interactive maps">Leaflet</a> &middot; <a href="https://qgis.org">QGIS</a>');
+        var autolinker = new Autolinker({truncate: {length: 30, location: 'smart'}});
+        var bounds_group = new L.featureGroup([]);
+        function setBounds() {
+        }
+        map.createPane('pane_GoogleRoad_0');
+        map.getPane('pane_GoogleRoad_0').style.zIndex = 400;
+        var layer_GoogleRoad_0 = L.tileLayer('https://mt1.google.com/vt/lyrs=m&x={x}&y={y}&z={z}', {
+            pane: 'pane_GoogleRoad_0',
+            opacity: 1.0,
+            attribution: '<a href="https://www.google.at/permissions/geoguidelines/attr-guide.html">Map data ©2015 Google</a>',
+            minZoom: 1,
+            maxZoom: 28,
+            minNativeZoom: 0,
+            maxNativeZoom: 20
+        });
+        layer_GoogleRoad_0;
+        map.addLayer(layer_GoogleRoad_0);
+        function pop_NA_1(feature, layer) {
+            layer.on({
+                mouseout: function(e) {
+                    for (i in e.target._eventParents) {
+                        e.target._eventParents[i].resetStyle(e.target);
+                    }
+                    if (typeof layer.closePopup == 'function') {
+                        layer.closePopup();
+                    } else {
+                        layer.eachLayer(function(feature){
+                            feature.closePopup()
+                        });
+                    }
+                },
+                mouseover: highlightFeature,
+            });
+            var popupContent = '<table>\
+                    <tr>\
+                        <th scope="row">Nosaukums</th>\
+                        <td>' + (feature.properties['Nosaukums'] !== null ? autolinker.link(feature.properties['Nosaukums'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Kategorija</th>\
+                        <td>' + (feature.properties['Kategorija'] !== null ? autolinker.link(feature.properties['Kategorija'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Periods</th>\
+                        <td>' + (feature.properties['Periods'] !== null ? autolinker.link(feature.properties['Periods'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Mantojuma?</th>\
+                        <td>' + (feature.properties['Mantojuma?'] !== null ? autolinker.link(feature.properties['Mantojuma?'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Pētīts?</th>\
+                        <td>' + (feature.properties['Pētīts?'] !== null ? autolinker.link(feature.properties['Pētīts?'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Komentāri</th>\
+                        <td>' + (feature.properties['Komentāri'] !== null ? autolinker.link(feature.properties['Komentāri'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                </table>';
+            layer.bindPopup(popupContent, {maxHeight: 400});
+        }
+
+        function style_NA_1_0(feature) {
+            switch(String(feature.properties['q2wHide_Symbol'])) {
+                case 'Apb/unk':
+                    return {
+                pane: 'pane_NA_1',
+                shape: 'triangle',
+                radius: 6.0,
+                opacity: 1,
+                color: 'rgba(255,255,255,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 2.0,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(134,134,134,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'P/unk':
+                    return {
+                pane: 'pane_NA_1',
+                shape: 'triangle',
+                radius: 8.0,
+                opacity: 1,
+                color: 'rgba(255,255,255,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 2.0,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(134,134,134,1.0)',
+                interactive: true,
+            }
+                    break;
+            }
+        }
+        map.createPane('pane_NA_1');
+        map.getPane('pane_NA_1').style.zIndex = 401;
+        map.getPane('pane_NA_1').style['mix-blend-mode'] = 'normal';
+        var layer_NA_1 = new L.geoJson(json_NA_1, {
+            attribution: '',
+            interactive: true,
+            dataVar: 'json_NA_1',
+            layerName: 'layer_NA_1',
+            pane: 'pane_NA_1',
+            onEachFeature: pop_NA_1,
+            pointToLayer: function (feature, latlng) {
+                var context = {
+                    feature: feature,
+                    variables: {}
+                };
+                return L.shapeMarker(latlng, style_NA_1_0(feature));
+            },
+        });
+        bounds_group.addLayer(layer_NA_1);
+        map.addLayer(layer_NA_1);
+        function pop_Jaunolaikuarheoloija_2(feature, layer) {
+            layer.on({
+                mouseout: function(e) {
+                    for (i in e.target._eventParents) {
+                        e.target._eventParents[i].resetStyle(e.target);
+                    }
+                    if (typeof layer.closePopup == 'function') {
+                        layer.closePopup();
+                    } else {
+                        layer.eachLayer(function(feature){
+                            feature.closePopup()
+                        });
+                    }
+                },
+                mouseover: highlightFeature,
+            });
+            var popupContent = '<table>\
+                    <tr>\
+                        <th scope="row">Nosaukums</th>\
+                        <td>' + (feature.properties['Nosaukums'] !== null ? autolinker.link(feature.properties['Nosaukums'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Kategorija</th>\
+                        <td>' + (feature.properties['Kategorija'] !== null ? autolinker.link(feature.properties['Kategorija'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Periods</th>\
+                        <td>' + (feature.properties['Periods'] !== null ? autolinker.link(feature.properties['Periods'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Mantojuma?</th>\
+                        <td>' + (feature.properties['Mantojuma?'] !== null ? autolinker.link(feature.properties['Mantojuma?'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Pētīts?</th>\
+                        <td>' + (feature.properties['Pētīts?'] !== null ? autolinker.link(feature.properties['Pētīts?'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Komentāri</th>\
+                        <td>' + (feature.properties['Komentāri'] !== null ? autolinker.link(feature.properties['Komentāri'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                </table>';
+            layer.bindPopup(popupContent, {maxHeight: 400});
+        }
+
+        function style_Jaunolaikuarheoloija_2_0(feature) {
+            switch(String(feature.properties['q2wHide_Symbol'])) {
+                case 'Apb/J':
+                    return {
+                pane: 'pane_Jaunolaikuarheoloija_2',
+                shape: 'triangle',
+                radius: 6.0,
+                opacity: 1,
+                color: 'rgba(255,255,255,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 2.0,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(232,12,176,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'DPZ/J':
+                    return {
+                pane: 'pane_Jaunolaikuarheoloija_2',
+                radius: 4.0,
+                opacity: 1,
+                color: 'rgba(255,255,255,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(232,12,176,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'K/J':
+                    return {
+                pane: 'pane_Jaunolaikuarheoloija_2',
+                shape: 'square',
+                radius: 4.0,
+                opacity: 1,
+                color: 'rgba(255,255,255,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 2.0,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(232,12,176,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'Obj/J':
+                    return {
+                pane: 'pane_Jaunolaikuarheoloija_2',
+                radius: 4.0,
+                opacity: 1,
+                color: 'rgba(255,255,255,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(232,12,176,1.0)',
+                interactive: true,
+            }
+                    break;
+            }
+        }
+        map.createPane('pane_Jaunolaikuarheoloija_2');
+        map.getPane('pane_Jaunolaikuarheoloija_2').style.zIndex = 402;
+        map.getPane('pane_Jaunolaikuarheoloija_2').style['mix-blend-mode'] = 'normal';
+        var layer_Jaunolaikuarheoloija_2 = new L.geoJson(json_Jaunolaikuarheoloija_2, {
+            attribution: '',
+            interactive: true,
+            dataVar: 'json_Jaunolaikuarheoloija_2',
+            layerName: 'layer_Jaunolaikuarheoloija_2',
+            pane: 'pane_Jaunolaikuarheoloija_2',
+            onEachFeature: pop_Jaunolaikuarheoloija_2,
+            pointToLayer: function (feature, latlng) {
+                var context = {
+                    feature: feature,
+                    variables: {}
+                };
+                return L.circleMarker(latlng, style_Jaunolaikuarheoloija_2_0(feature));
+            },
+        });
+        bounds_group.addLayer(layer_Jaunolaikuarheoloija_2);
+        map.addLayer(layer_Jaunolaikuarheoloija_2);
+        function pop_Viduslaikuarheoloija_3(feature, layer) {
+            layer.on({
+                mouseout: function(e) {
+                    for (i in e.target._eventParents) {
+                        e.target._eventParents[i].resetStyle(e.target);
+                    }
+                    if (typeof layer.closePopup == 'function') {
+                        layer.closePopup();
+                    } else {
+                        layer.eachLayer(function(feature){
+                            feature.closePopup()
+                        });
+                    }
+                },
+                mouseover: highlightFeature,
+            });
+            var popupContent = '<table>\
+                    <tr>\
+                        <th scope="row">Nosaukums</th>\
+                        <td>' + (feature.properties['Nosaukums'] !== null ? autolinker.link(feature.properties['Nosaukums'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Kategorija</th>\
+                        <td>' + (feature.properties['Kategorija'] !== null ? autolinker.link(feature.properties['Kategorija'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Periods</th>\
+                        <td>' + (feature.properties['Periods'] !== null ? autolinker.link(feature.properties['Periods'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Mantojuma?</th>\
+                        <td>' + (feature.properties['Mantojuma?'] !== null ? autolinker.link(feature.properties['Mantojuma?'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Pētīts?</th>\
+                        <td>' + (feature.properties['Pētīts?'] !== null ? autolinker.link(feature.properties['Pētīts?'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Komentāri</th>\
+                        <td>' + (feature.properties['Komentāri'] !== null ? autolinker.link(feature.properties['Komentāri'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                </table>';
+            layer.bindPopup(popupContent, {maxHeight: 400});
+        }
+
+        function style_Viduslaikuarheoloija_3_0(feature) {
+            switch(String(feature.properties['q2wHide_Symbol'])) {
+                case 'Apb':
+                    return {
+                pane: 'pane_Viduslaikuarheoloija_3',
+                shape: 'triangle',
+                radius: 6.0,
+                opacity: 1,
+                color: 'rgba(255,255,255,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 2.0,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(57,161,25,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'Apm':
+                    return {
+                pane: 'pane_Viduslaikuarheoloija_3',
+                shape: 'square',
+                radius: 6.0,
+                opacity: 1,
+                color: 'rgba(255,255,255,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 2.0,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(57,161,25,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'M':
+                    return {
+                pane: 'pane_Viduslaikuarheoloija_3',
+                shape: 'triangle',
+                radius: 8.0,
+                opacity: 1,
+                color: 'rgba(255,255,255,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 2.0,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(57,161,25,1.0)',
+                interactive: true,
+            }
+                    break;
+            }
+        }
+        map.createPane('pane_Viduslaikuarheoloija_3');
+        map.getPane('pane_Viduslaikuarheoloija_3').style.zIndex = 403;
+        map.getPane('pane_Viduslaikuarheoloija_3').style['mix-blend-mode'] = 'normal';
+        var layer_Viduslaikuarheoloija_3 = new L.geoJson(json_Viduslaikuarheoloija_3, {
+            attribution: '',
+            interactive: true,
+            dataVar: 'json_Viduslaikuarheoloija_3',
+            layerName: 'layer_Viduslaikuarheoloija_3',
+            pane: 'pane_Viduslaikuarheoloija_3',
+            onEachFeature: pop_Viduslaikuarheoloija_3,
+            pointToLayer: function (feature, latlng) {
+                var context = {
+                    feature: feature,
+                    variables: {}
+                };
+                return L.shapeMarker(latlng, style_Viduslaikuarheoloija_3_0(feature));
+            },
+        });
+        bounds_group.addLayer(layer_Viduslaikuarheoloija_3);
+        map.addLayer(layer_Viduslaikuarheoloija_3);
+        function pop_Vlaisdzelzslaikmets_4(feature, layer) {
+            layer.on({
+                mouseout: function(e) {
+                    for (i in e.target._eventParents) {
+                        e.target._eventParents[i].resetStyle(e.target);
+                    }
+                    if (typeof layer.closePopup == 'function') {
+                        layer.closePopup();
+                    } else {
+                        layer.eachLayer(function(feature){
+                            feature.closePopup()
+                        });
+                    }
+                },
+                mouseover: highlightFeature,
+            });
+            var popupContent = '<table>\
+                    <tr>\
+                        <th scope="row">Nosaukums</th>\
+                        <td>' + (feature.properties['Nosaukums'] !== null ? autolinker.link(feature.properties['Nosaukums'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Kategorija</th>\
+                        <td>' + (feature.properties['Kategorija'] !== null ? autolinker.link(feature.properties['Kategorija'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Periods</th>\
+                        <td>' + (feature.properties['Periods'] !== null ? autolinker.link(feature.properties['Periods'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Mantojuma?</th>\
+                        <td>' + (feature.properties['Mantojuma?'] !== null ? autolinker.link(feature.properties['Mantojuma?'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Pētīts?</th>\
+                        <td>' + (feature.properties['Pētīts?'] !== null ? autolinker.link(feature.properties['Pētīts?'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Komentāri</th>\
+                        <td>' + (feature.properties['Komentāri'] !== null ? autolinker.link(feature.properties['Komentāri'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                </table>';
+            layer.bindPopup(popupContent, {maxHeight: 400});
+        }
+
+        function style_Vlaisdzelzslaikmets_4_0(feature) {
+            switch(String(feature.properties['q2wHide_Symbol'])) {
+                case 'Apb/D':
+                    return {
+                pane: 'pane_Vlaisdzelzslaikmets_4',
+                shape: 'triangle',
+                radius: 6.0,
+                opacity: 1,
+                color: 'rgba(255,255,255,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 2.0,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(20,9,75,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'Apm/D':
+                    return {
+                pane: 'pane_Vlaisdzelzslaikmets_4',
+                shape: 'square',
+                radius: 6.0,
+                opacity: 1,
+                color: 'rgba(255,255,255,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 2.0,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(20,9,75,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'DPZ/D':
+                    return {
+                pane: 'pane_Vlaisdzelzslaikmets_4',
+                radius: 4.0,
+                opacity: 1,
+                color: 'rgba(255,255,255,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(20,9,75,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'M/D':
+                    return {
+                pane: 'pane_Vlaisdzelzslaikmets_4',
+                shape: 'triangle',
+                radius: 8.0,
+                opacity: 1,
+                color: 'rgba(255,255,255,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 2.0,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(20,9,75,1.0)',
+                interactive: true,
+            }
+                    break;
+            }
+        }
+        map.createPane('pane_Vlaisdzelzslaikmets_4');
+        map.getPane('pane_Vlaisdzelzslaikmets_4').style.zIndex = 404;
+        map.getPane('pane_Vlaisdzelzslaikmets_4').style['mix-blend-mode'] = 'normal';
+        var layer_Vlaisdzelzslaikmets_4 = new L.geoJson(json_Vlaisdzelzslaikmets_4, {
+            attribution: '',
+            interactive: true,
+            dataVar: 'json_Vlaisdzelzslaikmets_4',
+            layerName: 'layer_Vlaisdzelzslaikmets_4',
+            pane: 'pane_Vlaisdzelzslaikmets_4',
+            onEachFeature: pop_Vlaisdzelzslaikmets_4,
+            pointToLayer: function (feature, latlng) {
+                var context = {
+                    feature: feature,
+                    variables: {}
+                };
+                return L.shapeMarker(latlng, style_Vlaisdzelzslaikmets_4_0(feature));
+            },
+        });
+        bounds_group.addLayer(layer_Vlaisdzelzslaikmets_4);
+        map.addLayer(layer_Vlaisdzelzslaikmets_4);
+        function pop_Vidjaisdzelzslaikmets_5(feature, layer) {
+            layer.on({
+                mouseout: function(e) {
+                    for (i in e.target._eventParents) {
+                        e.target._eventParents[i].resetStyle(e.target);
+                    }
+                    if (typeof layer.closePopup == 'function') {
+                        layer.closePopup();
+                    } else {
+                        layer.eachLayer(function(feature){
+                            feature.closePopup()
+                        });
+                    }
+                },
+                mouseover: highlightFeature,
+            });
+            var popupContent = '<table>\
+                    <tr>\
+                        <th scope="row">Nosaukums</th>\
+                        <td>' + (feature.properties['Nosaukums'] !== null ? autolinker.link(feature.properties['Nosaukums'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Kategorija</th>\
+                        <td>' + (feature.properties['Kategorija'] !== null ? autolinker.link(feature.properties['Kategorija'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Periods</th>\
+                        <td>' + (feature.properties['Periods'] !== null ? autolinker.link(feature.properties['Periods'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Mantojuma?</th>\
+                        <td>' + (feature.properties['Mantojuma?'] !== null ? autolinker.link(feature.properties['Mantojuma?'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Pētīts?</th>\
+                        <td>' + (feature.properties['Pētīts?'] !== null ? autolinker.link(feature.properties['Pētīts?'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Komentāri</th>\
+                        <td>' + (feature.properties['Komentāri'] !== null ? autolinker.link(feature.properties['Komentāri'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                </table>';
+            layer.bindPopup(popupContent, {maxHeight: 400});
+        }
+
+        function style_Vidjaisdzelzslaikmets_5_0(feature) {
+            switch(String(feature.properties['q2wHide_Symbol'])) {
+                case 'Apb/D':
+                    return {
+                pane: 'pane_Vidjaisdzelzslaikmets_5',
+                shape: 'triangle',
+                radius: 6.0,
+                opacity: 1,
+                color: 'rgba(255,255,255,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 2.0,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(64,29,228,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'Apm/B':
+                    return {
+                pane: 'pane_Vidjaisdzelzslaikmets_5',
+                shape: 'square',
+                radius: 6.0,
+                opacity: 1,
+                color: 'rgba(255,255,255,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 2.0,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(64,29,228,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'DPZ/D':
+                    return {
+                pane: 'pane_Vidjaisdzelzslaikmets_5',
+                radius: 4.0,
+                opacity: 1,
+                color: 'rgba(255,255,255,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(64,29,228,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'P/D':
+                    return {
+                pane: 'pane_Vidjaisdzelzslaikmets_5',
+                shape: 'triangle',
+                radius: 8.0,
+                opacity: 1,
+                color: 'rgba(255,255,255,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 2.0,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(64,29,228,1.0)',
+                interactive: true,
+            }
+                    break;
+            }
+        }
+        map.createPane('pane_Vidjaisdzelzslaikmets_5');
+        map.getPane('pane_Vidjaisdzelzslaikmets_5').style.zIndex = 405;
+        map.getPane('pane_Vidjaisdzelzslaikmets_5').style['mix-blend-mode'] = 'normal';
+        var layer_Vidjaisdzelzslaikmets_5 = new L.geoJson(json_Vidjaisdzelzslaikmets_5, {
+            attribution: '',
+            interactive: true,
+            dataVar: 'json_Vidjaisdzelzslaikmets_5',
+            layerName: 'layer_Vidjaisdzelzslaikmets_5',
+            pane: 'pane_Vidjaisdzelzslaikmets_5',
+            onEachFeature: pop_Vidjaisdzelzslaikmets_5,
+            pointToLayer: function (feature, latlng) {
+                var context = {
+                    feature: feature,
+                    variables: {}
+                };
+                return L.shapeMarker(latlng, style_Vidjaisdzelzslaikmets_5_0(feature));
+            },
+        });
+        bounds_group.addLayer(layer_Vidjaisdzelzslaikmets_5);
+        map.addLayer(layer_Vidjaisdzelzslaikmets_5);
+        function pop_Agraisdzelzslaikmets_6(feature, layer) {
+            layer.on({
+                mouseout: function(e) {
+                    for (i in e.target._eventParents) {
+                        e.target._eventParents[i].resetStyle(e.target);
+                    }
+                    if (typeof layer.closePopup == 'function') {
+                        layer.closePopup();
+                    } else {
+                        layer.eachLayer(function(feature){
+                            feature.closePopup()
+                        });
+                    }
+                },
+                mouseover: highlightFeature,
+            });
+            var popupContent = '<table>\
+                    <tr>\
+                        <th scope="row">Nosaukums</th>\
+                        <td>' + (feature.properties['Nosaukums'] !== null ? autolinker.link(feature.properties['Nosaukums'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Kategorija</th>\
+                        <td>' + (feature.properties['Kategorija'] !== null ? autolinker.link(feature.properties['Kategorija'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Periods</th>\
+                        <td>' + (feature.properties['Periods'] !== null ? autolinker.link(feature.properties['Periods'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Mantojuma?</th>\
+                        <td>' + (feature.properties['Mantojuma?'] !== null ? autolinker.link(feature.properties['Mantojuma?'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Pētīts?</th>\
+                        <td>' + (feature.properties['Pētīts?'] !== null ? autolinker.link(feature.properties['Pētīts?'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Komentāri</th>\
+                        <td>' + (feature.properties['Komentāri'] !== null ? autolinker.link(feature.properties['Komentāri'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                </table>';
+            layer.bindPopup(popupContent, {maxHeight: 400});
+        }
+
+        function style_Agraisdzelzslaikmets_6_0(feature) {
+            switch(String(feature.properties['q2wHide_Symbol'])) {
+                case 'Apb/D':
+                    return {
+                pane: 'pane_Agraisdzelzslaikmets_6',
+                shape: 'triangle',
+                radius: 6.0,
+                opacity: 1,
+                color: 'rgba(255,255,255,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 2.0,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(64,102,228,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'Apm/B':
+                    return {
+                pane: 'pane_Agraisdzelzslaikmets_6',
+                shape: 'square',
+                radius: 6.0,
+                opacity: 1,
+                color: 'rgba(255,255,255,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 2.0,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(64,102,228,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'P/D':
+                    return {
+                pane: 'pane_Agraisdzelzslaikmets_6',
+                shape: 'triangle',
+                radius: 8.0,
+                opacity: 1,
+                color: 'rgba(255,255,255,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 2.0,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(64,102,228,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'RM/D':
+                    return {
+                pane: 'pane_Agraisdzelzslaikmets_6',
+                radius: 6.0,
+                opacity: 1,
+                color: 'rgba(255,255,255,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 2.0,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(64,102,228,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'SV/D':
+                    return {
+                pane: 'pane_Agraisdzelzslaikmets_6',
+                radius: 4.0,
+                opacity: 1,
+                color: 'rgba(255,255,255,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(64,102,228,1.0)',
+                interactive: true,
+            }
+                    break;
+            }
+        }
+        map.createPane('pane_Agraisdzelzslaikmets_6');
+        map.getPane('pane_Agraisdzelzslaikmets_6').style.zIndex = 406;
+        map.getPane('pane_Agraisdzelzslaikmets_6').style['mix-blend-mode'] = 'normal';
+        var layer_Agraisdzelzslaikmets_6 = new L.geoJson(json_Agraisdzelzslaikmets_6, {
+            attribution: '',
+            interactive: true,
+            dataVar: 'json_Agraisdzelzslaikmets_6',
+            layerName: 'layer_Agraisdzelzslaikmets_6',
+            pane: 'pane_Agraisdzelzslaikmets_6',
+            onEachFeature: pop_Agraisdzelzslaikmets_6,
+            pointToLayer: function (feature, latlng) {
+                var context = {
+                    feature: feature,
+                    variables: {}
+                };
+                return L.circleMarker(latlng, style_Agraisdzelzslaikmets_6_0(feature));
+            },
+        });
+        bounds_group.addLayer(layer_Agraisdzelzslaikmets_6);
+        map.addLayer(layer_Agraisdzelzslaikmets_6);
+        function pop_Senkaisdzelzslaikmets_7(feature, layer) {
+            layer.on({
+                mouseout: function(e) {
+                    for (i in e.target._eventParents) {
+                        e.target._eventParents[i].resetStyle(e.target);
+                    }
+                    if (typeof layer.closePopup == 'function') {
+                        layer.closePopup();
+                    } else {
+                        layer.eachLayer(function(feature){
+                            feature.closePopup()
+                        });
+                    }
+                },
+                mouseover: highlightFeature,
+            });
+            var popupContent = '<table>\
+                    <tr>\
+                        <th scope="row">Nosaukums</th>\
+                        <td>' + (feature.properties['Nosaukums'] !== null ? autolinker.link(feature.properties['Nosaukums'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Kategorija</th>\
+                        <td>' + (feature.properties['Kategorija'] !== null ? autolinker.link(feature.properties['Kategorija'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Periods</th>\
+                        <td>' + (feature.properties['Periods'] !== null ? autolinker.link(feature.properties['Periods'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Mantojuma?</th>\
+                        <td>' + (feature.properties['Mantojuma?'] !== null ? autolinker.link(feature.properties['Mantojuma?'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Pētīts?</th>\
+                        <td>' + (feature.properties['Pētīts?'] !== null ? autolinker.link(feature.properties['Pētīts?'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Komentāri</th>\
+                        <td>' + (feature.properties['Komentāri'] !== null ? autolinker.link(feature.properties['Komentāri'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                </table>';
+            layer.bindPopup(popupContent, {maxHeight: 400});
+        }
+
+        function style_Senkaisdzelzslaikmets_7_0(feature) {
+            switch(String(feature.properties['q2wHide_Symbol'])) {
+                case 'Apb/D':
+                    return {
+                pane: 'pane_Senkaisdzelzslaikmets_7',
+                shape: 'triangle',
+                radius: 6.0,
+                opacity: 1,
+                color: 'rgba(255,255,255,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 2.0,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(64,176,228,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'Apm':
+                    return {
+                pane: 'pane_Senkaisdzelzslaikmets_7',
+                shape: 'square',
+                radius: 6.0,
+                opacity: 1,
+                color: 'rgba(255,255,255,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 2.0,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(64,176,228,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'P/D':
+                    return {
+                pane: 'pane_Senkaisdzelzslaikmets_7',
+                shape: 'triangle',
+                radius: 8.0,
+                opacity: 1,
+                color: 'rgba(255,255,255,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 2.0,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(64,176,228,1.0)',
+                interactive: true,
+            }
+                    break;
+            }
+        }
+        map.createPane('pane_Senkaisdzelzslaikmets_7');
+        map.getPane('pane_Senkaisdzelzslaikmets_7').style.zIndex = 407;
+        map.getPane('pane_Senkaisdzelzslaikmets_7').style['mix-blend-mode'] = 'normal';
+        var layer_Senkaisdzelzslaikmets_7 = new L.geoJson(json_Senkaisdzelzslaikmets_7, {
+            attribution: '',
+            interactive: true,
+            dataVar: 'json_Senkaisdzelzslaikmets_7',
+            layerName: 'layer_Senkaisdzelzslaikmets_7',
+            pane: 'pane_Senkaisdzelzslaikmets_7',
+            onEachFeature: pop_Senkaisdzelzslaikmets_7,
+            pointToLayer: function (feature, latlng) {
+                var context = {
+                    feature: feature,
+                    variables: {}
+                };
+                return L.shapeMarker(latlng, style_Senkaisdzelzslaikmets_7_0(feature));
+            },
+        });
+        bounds_group.addLayer(layer_Senkaisdzelzslaikmets_7);
+        map.addLayer(layer_Senkaisdzelzslaikmets_7);
+        function pop_Bronzaslaikmets_8(feature, layer) {
+            layer.on({
+                mouseout: function(e) {
+                    for (i in e.target._eventParents) {
+                        e.target._eventParents[i].resetStyle(e.target);
+                    }
+                    if (typeof layer.closePopup == 'function') {
+                        layer.closePopup();
+                    } else {
+                        layer.eachLayer(function(feature){
+                            feature.closePopup()
+                        });
+                    }
+                },
+                mouseover: highlightFeature,
+            });
+            var popupContent = '<table>\
+                    <tr>\
+                        <th scope="row">Nosaukums</th>\
+                        <td>' + (feature.properties['Nosaukums'] !== null ? autolinker.link(feature.properties['Nosaukums'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Kategorija</th>\
+                        <td>' + (feature.properties['Kategorija'] !== null ? autolinker.link(feature.properties['Kategorija'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Periods</th>\
+                        <td>' + (feature.properties['Periods'] !== null ? autolinker.link(feature.properties['Periods'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Mantojuma?</th>\
+                        <td>' + (feature.properties['Mantojuma?'] !== null ? autolinker.link(feature.properties['Mantojuma?'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Pētīts?</th>\
+                        <td>' + (feature.properties['Pētīts?'] !== null ? autolinker.link(feature.properties['Pētīts?'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Komentāri</th>\
+                        <td>' + (feature.properties['Komentāri'] !== null ? autolinker.link(feature.properties['Komentāri'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                </table>';
+            layer.bindPopup(popupContent, {maxHeight: 400});
+        }
+
+        function style_Bronzaslaikmets_8_0(feature) {
+            switch(String(feature.properties['q2wHide_Symbol'])) {
+                case 'Apm/B':
+                    return {
+                pane: 'pane_Bronzaslaikmets_8',
+                shape: 'square',
+                radius: 6.0,
+                opacity: 1,
+                color: 'rgba(255,255,255,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 2.0,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(214,168,16,1.0)',
+                interactive: true,
+            }
+                    break;
+            }
+        }
+        map.createPane('pane_Bronzaslaikmets_8');
+        map.getPane('pane_Bronzaslaikmets_8').style.zIndex = 408;
+        map.getPane('pane_Bronzaslaikmets_8').style['mix-blend-mode'] = 'normal';
+        var layer_Bronzaslaikmets_8 = new L.geoJson(json_Bronzaslaikmets_8, {
+            attribution: '',
+            interactive: true,
+            dataVar: 'json_Bronzaslaikmets_8',
+            layerName: 'layer_Bronzaslaikmets_8',
+            pane: 'pane_Bronzaslaikmets_8',
+            onEachFeature: pop_Bronzaslaikmets_8,
+            pointToLayer: function (feature, latlng) {
+                var context = {
+                    feature: feature,
+                    variables: {}
+                };
+                return L.shapeMarker(latlng, style_Bronzaslaikmets_8_0(feature));
+            },
+        });
+        bounds_group.addLayer(layer_Bronzaslaikmets_8);
+        map.addLayer(layer_Bronzaslaikmets_8);
+            var abstract = new L.Control({'position':'topleft'});
+            abstract.onAdd = function (map) {
+                this._div = L.DomUtil.create('div',
+                'leaflet-control abstract');
+                this._div.id = 'abstract'
+                    this._div.setAttribute("onmouseenter", "abstract.show()");
+                    this._div.setAttribute("onmouseleave", "abstract.hide()");
+                    this.hide();
+                    return this._div;
+                };
+                abstract.hide = function () {
+                    this._div.classList.remove("abstractUncollapsed");
+                    this._div.classList.add("abstract");
+                    this._div.innerHTML = 'i'
+                }
+                abstract.show = function () {
+                    this._div.classList.remove("abstract");
+                    this._div.classList.add("abstractUncollapsed");
+                    this._div.innerHTML = '<br />B - Bronzas laikmets<br />1800.g.p.m.ē. - 500.g.p.m.ē.<br />D1 - Senākais dzelzs laikmets<br />500.g.p.m.ē. - 1.g.m.ē.<br />D2 - Agrais dzelzs laikmets<br />1 - 400<br />D3 - Vidējais dzelzs laikmets<br />400 - 800<br />D4 - Vēlais dzelzs laikmets<br />800-1200<br />V - Viduslaiku arheoloģija<br />1200 - 1500<br />J - Jauno laiku arheoloģija<br />1500 - 1918<br /><br /><br />Apb. - Apbedījumi / burials [I - uzkalniņu kapi; II - līdzenie kapi]<br />Apm. - Apmetne / Settlement<br />DPZ - Depozīts / deposit<br />Izn. - Iznīcināts / destroyed<br />K - Kulta vieta / Sacred site<br />RM - Romiešu monētu depozīts<br />Obj. - Objekts / Misc site<br />P - Pilskalns / Hillfort<br />SV - Savrupatradums / Solitary find<br /><br /><br /><br />Objekta krāsa apzīmē senāko laika periodu.<br /><br />Depozītu un savrupatradumu atrašanās vieta kartē var neatbilst patiesībai. ';
+            };
+            abstract.addTo(map);
+        var baseMaps = {};
+        L.control.layers(baseMaps,{'Bronzas laikmets<br /><table><tr><td style="text-align: center;"><img src="legend/Bronzaslaikmets_8_Apmetne0.png" /></td><td>Apmetne</td></tr></table>': layer_Bronzaslaikmets_8,'Senākais dzelzs laikmets<br /><table><tr><td style="text-align: center;"><img src="legend/Senkaisdzelzslaikmets_7_Apbedījums0.png" /></td><td>Apbedījums</td></tr><tr><td style="text-align: center;"><img src="legend/Senkaisdzelzslaikmets_7_Apmetne1.png" /></td><td>Apmetne</td></tr><tr><td style="text-align: center;"><img src="legend/Senkaisdzelzslaikmets_7_Pilskalns2.png" /></td><td>Pilskalns</td></tr></table>': layer_Senkaisdzelzslaikmets_7,'Agrais dzelzs laikmets<br /><table><tr><td style="text-align: center;"><img src="legend/Agraisdzelzslaikmets_6_Apbedījums0.png" /></td><td>Apbedījums</td></tr><tr><td style="text-align: center;"><img src="legend/Agraisdzelzslaikmets_6_Apmetne1.png" /></td><td>Apmetne</td></tr><tr><td style="text-align: center;"><img src="legend/Agraisdzelzslaikmets_6_Pilskalns2.png" /></td><td>Pilskalns</td></tr><tr><td style="text-align: center;"><img src="legend/Agraisdzelzslaikmets_6_Romiešumonētudepozīts3.png" /></td><td>Romiešu monētu depozīts</td></tr><tr><td style="text-align: center;"><img src="legend/Agraisdzelzslaikmets_6_Savrupatradums4.png" /></td><td>Savrupatradums</td></tr></table>': layer_Agraisdzelzslaikmets_6,'Vidējais dzelzs laikmets<br /><table><tr><td style="text-align: center;"><img src="legend/Vidjaisdzelzslaikmets_5_Apbedījums0.png" /></td><td>Apbedījums</td></tr><tr><td style="text-align: center;"><img src="legend/Vidjaisdzelzslaikmets_5_Apmetne1.png" /></td><td>Apmetne</td></tr><tr><td style="text-align: center;"><img src="legend/Vidjaisdzelzslaikmets_5_Depozīts2.png" /></td><td>Depozīts</td></tr><tr><td style="text-align: center;"><img src="legend/Vidjaisdzelzslaikmets_5_Pilskalns3.png" /></td><td>Pilskalns</td></tr></table>': layer_Vidjaisdzelzslaikmets_5,'Vēlais dzelzs laikmets<br /><table><tr><td style="text-align: center;"><img src="legend/Vlaisdzelzslaikmets_4_Apbedījums0.png" /></td><td>Apbedījums</td></tr><tr><td style="text-align: center;"><img src="legend/Vlaisdzelzslaikmets_4_Apmetne1.png" /></td><td>Apmetne</td></tr><tr><td style="text-align: center;"><img src="legend/Vlaisdzelzslaikmets_4_Depozīts2.png" /></td><td>Depozīts</td></tr><tr><td style="text-align: center;"><img src="legend/Vlaisdzelzslaikmets_4_Mūrapils3.png" /></td><td>Mūra pils</td></tr></table>': layer_Vlaisdzelzslaikmets_4,'Viduslaiku arheoloģija<br /><table><tr><td style="text-align: center;"><img src="legend/Viduslaikuarheoloija_3_Apbedījums0.png" /></td><td>Apbedījums</td></tr><tr><td style="text-align: center;"><img src="legend/Viduslaikuarheoloija_3_Apmetne1.png" /></td><td>Apmetne</td></tr><tr><td style="text-align: center;"><img src="legend/Viduslaikuarheoloija_3_Mūrapils2.png" /></td><td>Mūra pils</td></tr></table>': layer_Viduslaikuarheoloija_3,'Jauno laiku arheoloģija<br /><table><tr><td style="text-align: center;"><img src="legend/Jaunolaikuarheoloija_2_Apbedījums0.png" /></td><td>Apbedījums</td></tr><tr><td style="text-align: center;"><img src="legend/Jaunolaikuarheoloija_2_Depozīts1.png" /></td><td>Depozīts</td></tr><tr><td style="text-align: center;"><img src="legend/Jaunolaikuarheoloija_2_Kultavieta2.png" /></td><td>Kulta vieta</td></tr><tr><td style="text-align: center;"><img src="legend/Jaunolaikuarheoloija_2_Objekts3.png" /></td><td>Objekts</td></tr></table>': layer_Jaunolaikuarheoloija_2,'N/A<br /><table><tr><td style="text-align: center;"><img src="legend/NA_1_Apbedījumi0.png" /></td><td>Apbedījumi</td></tr><tr><td style="text-align: center;"><img src="legend/NA_1_Pilskalns1.png" /></td><td>Pilskalns</td></tr></table>': layer_NA_1,"Google Road": layer_GoogleRoad_0,},{collapsed:false}).addTo(map);
+        setBounds();
+        </script>
+    </body>
+</html>
